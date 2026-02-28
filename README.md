@@ -93,3 +93,16 @@ pnpm build
 pnpm test
 pnpm typecheck
 ```
+
+## Versionado y releases
+
+El repo usa `release-please` con el workflow [release.yml](/Users/joseluis/Desktop/projects/jose/integrafacturacion-sdk-nodejs/.github/workflows/release.yml):
+
+- Al hacer push a `main`, crea/actualiza un PR de release.
+- Al mergear ese PR, crea tag + GitHub Release.
+- Cuando la release se crea, publica automáticamente en npm.
+
+Para que funcione:
+
+- Debes usar Conventional Commits (`feat:`, `fix:`, `feat!:` o `BREAKING CHANGE:`).
+- Debes tener el secret `NPM_TOKEN` configurado en GitHub.

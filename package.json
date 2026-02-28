@@ -1,6 +1,6 @@
 {
   "name": "@integrafacturacion/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "SDK Node.js/TypeScript para la API de IntegraFacturacion con arquitectura hexagonal",
   "keywords": [
     "integrafacturacion",

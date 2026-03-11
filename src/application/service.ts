@@ -9,10 +9,10 @@ import type {
   UploadCertificateRequest,
   UploadNumerationRequest
 } from '../domain/types.js';
-import type { IntegraFacturacionAPI } from '../ports/api.js';
+import type { IntegraDTEAPI } from '../ports/api.js';
 
 export class Service {
-  constructor(private readonly api: IntegraFacturacionAPI) {}
+  constructor(private readonly api: IntegraDTEAPI) {}
 
   createDocument(req: CreateDocumentRequest): Promise<APIResponse> {
     return this.api.createDocument(req);

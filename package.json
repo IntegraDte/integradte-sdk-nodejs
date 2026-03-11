@@ -1,22 +1,22 @@
 {
-  "name": "@integrafacturacion/sdk",
+  "name": "@integradte/sdk",
   "version": "0.1.0",
-  "description": "SDK Node.js/TypeScript para la API de IntegraFacturacion con arquitectura hexagonal",
+  "description": "SDK Node.js/TypeScript para la API de IntegraDTE con arquitectura hexagonal",
   "keywords": [
-    "integrafacturacion",
+    "integradte",
     "dte",
     "sii",
     "sdk",
     "typescript",
     "nodejs"
   ],
-  "homepage": "https://github.com/JoseLuis21/integrafacturacion-sdk-nodejs",
+  "homepage": "https://github.com/JoseLuis21/integradte-sdk-nodejs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JoseLuis21/integrafacturacion-sdk-nodejs.git"
+    "url": "git+https://github.com/JoseLuis21/integradte-sdk-nodejs.git"
   },
   "bugs": {
-    "url": "https://github.com/JoseLuis21/integrafacturacion-sdk-nodejs/issues"
+    "url": "https://github.com/JoseLuis21/integradte-sdk-nodejs/issues"
   },
   "license": "MIT",
   "author": "Jose Luis",

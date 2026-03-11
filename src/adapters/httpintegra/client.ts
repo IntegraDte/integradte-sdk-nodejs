@@ -9,9 +9,9 @@ import type {
   UploadCertificateRequest,
   UploadNumerationRequest
 } from '../../domain/types.js';
-import type { IntegraFacturacionAPI } from '../../ports/api.js';
+import type { IntegraDTEAPI } from '../../ports/api.js';
 
-export const DEFAULT_BASE_URL = 'https://api.integrafacturacion.cl';
+export const DEFAULT_BASE_URL = 'https://api.integradte.cl';
 
 export interface ClientConfig {
   apiKey: string;
@@ -25,29 +25,29 @@ export class APIError extends Error {
     public readonly statusCode: number,
     public readonly body: string
   ) {
-    super(`integrafacturacion: status=${statusCode} body=${body}`);
+    super(`integradte: status=${statusCode} body=${body}`);
     this.name = 'APIError';
   }
 }
 
-export class Client implements IntegraFacturacionAPI {
+export class Client implements IntegraDTEAPI {
   private readonly fetchFn: typeof fetch;
   private readonly baseURL: string;
   private readonly userAgent: string;
 
   constructor(private readonly config: ClientConfig) {
     if (!config.apiKey?.trim()) {
-      throw new Error('integrafacturacion: API key is required');
+      throw new Error('integradte: API key is required');
     }
 
     this.baseURL = (config.baseURL ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
 
     if (!isValidURL(this.baseURL)) {
-      throw new Error('integrafacturacion: invalid base URL');
+      throw new Error('integradte: invalid base URL');
     }
 
     this.fetchFn = config.fetchFn ?? fetch;
-    this.userAgent = config.userAgent?.trim() || '@integrafacturacion/sdk/0.1.0';
+    this.userAgent = config.userAgent?.trim() || '@integradte/sdk/0.1.0';
   }
 
   async createDocument(req: CreateDocumentRequest): Promise<APIResponse> {
@@ -165,7 +165,7 @@ export class Client implements IntegraFacturacionAPI {
     try {
       return JSON.parse(rawBody) as APIResponse;
     } catch (error) {
-      throw new Error(`integrafacturacion: decode response: ${(error as Error).message}`);
+      throw new Error(`integradte: decode response: ${(error as Error).message}`);
     }
   }
 }

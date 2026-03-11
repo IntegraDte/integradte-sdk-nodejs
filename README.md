@@ -1,11 +1,11 @@
-# @integrafacturacion/sdk
+# @integradte/sdk
 
-SDK en Node.js + TypeScript para consumir la API de [IntegraFacturacion](https://api.integrafacturacion.cl), siguiendo arquitectura hexagonal.
+SDK en Node.js + TypeScript para consumir la API de [IntegraDTE](https://api.integradte.cl), siguiendo arquitectura hexagonal.
 
 ## Instalacion
 
 ```bash
-npm install @integrafacturacion/sdk
+npm install @integradte/sdk
 ```
 
 ## Estructura
@@ -18,7 +18,7 @@ npm install @integrafacturacion/sdk
 ## Uso recomendado
 
 ```ts
-import { Client, Service, encodeDataDTE } from '@integrafacturacion/sdk';
+import { Client, Service, encodeDataDTE } from '@integradte/sdk';
 
 const adapter = new Client({
   apiKey: 'TU_X_API_KEY'
@@ -96,7 +96,7 @@ pnpm typecheck
 
 ## Versionado y releases
 
-El repo usa `release-please` con el workflow [release.yml](/Users/joseluis/Desktop/projects/jose/integrafacturacion-sdk-nodejs/.github/workflows/release.yml):
+El repo usa `release-please` con el workflow `./.github/workflows/release.yml`:
 
 - Al hacer push a `main`, crea/actualiza un PR de release.
 - Al mergear ese PR, crea tag + GitHub Release.

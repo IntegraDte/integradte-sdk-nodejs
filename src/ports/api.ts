@@ -10,7 +10,7 @@ import type {
   UploadNumerationRequest
 } from '../domain/types.js';
 
-export interface IntegraFacturacionAPI {
+export interface IntegraDTEAPI {
   createDocument(req: CreateDocumentRequest): Promise<APIResponse>;
   getDocument(id: string): Promise<APIResponse>;
   getDocumentStats(): Promise<APIResponse>;

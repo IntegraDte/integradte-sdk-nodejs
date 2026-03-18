@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.3.0...sdk-v0.3.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* **package:** update homepage and repository URLs to reflect new ownership ([09e4d27](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/09e4d27fc18f1020acd2bc3beadb2248ab545e7f))
+
 ## [0.2.0](https://github.com/IntegraDte/integrafacturacion-sdk-nodejs/compare/sdk-v0.1.0...sdk-v0.2.0) (2026-02-28)
 
 ## [0.3.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.2.0...sdk-v0.3.0) (2026-03-18)

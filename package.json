@@ -10,13 +10,13 @@
     "typescript",
     "nodejs"
   ],
-  "homepage": "https://github.com/JoseLuis21/integradte-sdk-nodejs",
+  "homepage": "https://github.com/IntegraDte/integradte-sdk-nodejs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JoseLuis21/integradte-sdk-nodejs.git"
+    "url": "git+https://github.com/IntegraDte/integradte-sdk-nodejs.git"
   },
   "bugs": {
-    "url": "https://github.com/JoseLuis21/integradte-sdk-nodejs/issues"
+    "url": "https://github.com/IntegraDte/integradte-sdk-nodejs/issues"
   },
   "license": "MIT",
   "author": "Jose Luis",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.3.1...sdk-v0.4.0) (2026-06-11)
+
+
+### Features
+
+* **api:** add new endpoints for businesses, documents, licenses, and billing ([2557e54](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/2557e54f1467a8480aea5d0ecac11c32c64eba21))
+
 ## [0.3.1](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.3.0...sdk-v0.3.1) (2026-03-18)
 
 

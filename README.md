@@ -70,21 +70,74 @@ Y builders:
 
 ## Endpoints implementados
 
+### Usuarios y empresas
+
+- `getMe`
+- `listBusinesses`
+- `createBusiness`
+- `getBusiness`
+- `updateBusiness`
+- `enableProductionMode`
+- `enableCertificationMode`
+
+### Documentos y compras
+
 - `createDocument`
+- `listDocuments`
 - `getDocument`
 - `getDocumentStats`
+- `syncDocument`
+- `requeueDocument`
+- `requeueOfflineDocument`
+- `requeueOfflineDocumentStatus`
 - `createCession`
 - `generatePDF`
-- `createBusiness`
-- `updateBusiness`
+- `createPurchase`
+- `listPurchaseAcknowledgments`
+
+### Certificados, billing y numeraciones
+
 - `uploadCertificate`
 - `getCertificateInfo`
-- `getMe`
-- `createPurchase`
+- `getCurrentCertificate`
+- `getBillingBalance`
+- `listBillingPayments`
 - `getNumerationSummary`
 - `getLastUsedFolio`
 - `uploadNumeration`
 - `deleteNumeration`
+- `requestNumbers`
+- `requestNumerations`
+
+### Licencias offline
+
+- `createLicense`
+- `listLicenses`
+- `getLicense`
+- `listLicenseDevices`
+- `enableLicense`
+- `disableLicense`
+- `revokeLicense`
+- `activateLicense`
+- `refreshLicense`
+
+## Filtros y folios offline
+
+```ts
+const documents = await service.listDocuments({
+  code_sii: '33',
+  status: 'accepted',
+  from_date: '2026-01-01',
+  to_date: '2026-01-31',
+  page: 1,
+  limit: 20
+});
+
+const folioRanges = await service.requestNumbers({
+  document_type: 33,
+  quantity: 100
+});
+```
 
 ## Scripts
 

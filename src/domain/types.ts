@@ -1,5 +1,23 @@
 export type APIResponse = Record<string, unknown>;
 
+/** Error de validación campo a campo que devuelve la API (status 422). */
+export interface FieldError {
+  field: string;
+  message: string;
+}
+
+/** Forma del body JSON que devuelve la API ante un error. */
+export interface APIErrorBody {
+  success?: boolean;
+  message?: string;
+  /** Presente en errores de validación (422): detalle por campo. */
+  details?: FieldError[];
+  /** Código de error opcional. */
+  code?: string;
+  /** Detalle de error crudo (solo en entornos no productivos). */
+  error?: string;
+}
+
 export interface IdempotentRequest {
   idempotencyKey?: string;
 }

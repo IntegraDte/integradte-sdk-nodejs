@@ -1,5 +1,6 @@
 import type {
   ActivateLicenseRequest,
+  APIErrorBody,
   APIResponse,
   BillingPaymentFilters,
   CreateBusinessRequest,
@@ -8,6 +9,7 @@ import type {
   CreateLicenseRequest,
   CreatePurchaseRequest,
   DocumentFilters,
+  FieldError,
   FolioRange,
   GeneratePDFRequest,
   LicenseActionRequest,
@@ -34,12 +36,50 @@ export interface ClientConfig {
 }
 
 export class APIError extends Error {
+  private parsedBody?: APIErrorBody | null;
+
   constructor(
     public readonly statusCode: number,
     public readonly body: string
   ) {
     super(`integradte: status=${statusCode} body=${body}`);
     this.name = 'APIError';
+  }
+
+  /**
+   * Body de error parseado como JSON (memoizado). Devuelve null si el body no es
+   * JSON válido (p. ej. un 500 pelado sin cuerpo estructurado).
+   */
+  get parsed(): APIErrorBody | null {
+    if (this.parsedBody === undefined) {
+      try {
+        this.parsedBody = JSON.parse(this.body) as APIErrorBody;
+      } catch {
+        this.parsedBody = null;
+      }
+    }
+    return this.parsedBody;
+  }
+
+  /** Mensaje legible que devolvió la API, si vino. */
+  get apiMessage(): string | undefined {
+    return this.parsed?.message;
+  }
+
+  /**
+   * Errores de validación campo a campo (presentes en respuestas 422). Devuelve
+   * [] si no hay detalle, para poder iterar sin chequear null.
+   */
+  get details(): FieldError[] {
+    return this.parsed?.details ?? [];
+  }
+
+  /**
+   * true si es un error de validación (422): el usuario puede corregirlo y
+   * `details`/`apiMessage` traen el motivo. Un 500 no es validation error.
+   */
+  isValidationError(): boolean {
+    return this.statusCode === 422;
   }
 }
 

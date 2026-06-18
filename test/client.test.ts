@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { Client } from '../src/adapters/httpintegra/client.js';
+import { APIError, Client } from '../src/adapters/httpintegra/client.js';
 import type {
   CreateDocumentRequest,
   OfflineLicensePayload,
@@ -267,3 +267,36 @@ function signedLicense(): SignedOfflineLicense {
 
   return { payload, signature: 'BASE64_SIGNATURE' };
 }
+
+describe('APIError', () => {
+  it('exposes parsed message and field details for a 422 validation error', () => {
+    const body = JSON.stringify({
+      success: false,
+      message: 'validation error',
+      details: [{ field: 'Encabezado.IdDoc.TipoDTE', message: 'falta el campo TipoDTE' }]
+    });
+    const err = new APIError(422, body);
+
+    expect(err.isValidationError()).toBe(true);
+    expect(err.apiMessage).toBe('validation error');
+    expect(err.details).toEqual([
+      { field: 'Encabezado.IdDoc.TipoDTE', message: 'falta el campo TipoDTE' }
+    ]);
+  });
+
+  it('returns null parsed and empty details when body is not JSON', () => {
+    const err = new APIError(500, 'Internal Server Error');
+
+    expect(err.isValidationError()).toBe(false);
+    expect(err.parsed).toBeNull();
+    expect(err.apiMessage).toBeUndefined();
+    expect(err.details).toEqual([]);
+  });
+
+  it('returns empty details when a JSON error has no details array', () => {
+    const err = new APIError(409, JSON.stringify({ success: false, message: 'business with rut already exists' }));
+
+    expect(err.apiMessage).toBe('business with rut already exists');
+    expect(err.details).toEqual([]);
+  });
+});

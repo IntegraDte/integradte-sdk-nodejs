@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.4.0...sdk-v0.5.0) (2026-06-18)
+
+
+### Features
+
+* **APIError:** enhance error handling with detailed validation error information ([5b58fad](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/5b58fada50c398b90444adb199d73b20df11cda1))
+
 ## [0.4.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.3.1...sdk-v0.4.0) (2026-06-11)
 
 

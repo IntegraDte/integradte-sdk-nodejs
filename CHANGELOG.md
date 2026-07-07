@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.5.0...sdk-v0.6.0) (2026-07-07)
+
+
+### Features
+
+* **onboarding:** OnboardingClient para login y primera empresa con x-user-key ([8a3bb67](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/8a3bb6762a470c20d13f7e61d2e3d5feaabe15fb))
+
 ## [0.5.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.4.0...sdk-v0.5.0) (2026-06-18)
 
 

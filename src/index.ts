@@ -5,3 +5,4 @@ export * as httpintegra from './adapters/httpintegra/index.js';
 
 export { Service } from './application/service.js';
 export { Client, APIError, DEFAULT_BASE_URL, encodeDataDTE } from './adapters/httpintegra/client.js';
+export { OnboardingClient } from './adapters/httpintegra/onboarding.js';

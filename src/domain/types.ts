@@ -64,6 +64,26 @@ export type CreateBusinessRequest = BusinessRequest & IdempotentRequest;
 
 export type UpdateBusinessRequest = CreateBusinessRequest;
 
+/** Credenciales para POST /api/v1/auth/login (ruta pública, sin x-api-key). */
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+/** Forma de `data` que devuelve el login: el x-user-key para el bootstrap. */
+export interface LoginResponseData {
+  user_id: string;
+  email: string;
+  /** Credencial de usuario que se envía como header `x-user-key`. */
+  xUserKey: string;
+}
+
+/**
+ * Payload para crear la PRIMERA empresa del usuario (POST /api/v1/onboarding/businesses).
+ * Mismo cuerpo que crear empresa, pero sin idempotencyKey: ese endpoint no usa idempotency.
+ */
+export type CreateFirstBusinessRequest = BusinessRequest;
+
 export interface ProductionModeRequest {
   resolution_number_dte: string;
   resolution_date_dte: string;

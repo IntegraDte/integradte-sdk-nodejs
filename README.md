@@ -136,7 +136,6 @@ Y builders:
 - `listDocuments`
 - `getDocument`
 - `getDocumentStats`
-- `syncDocument`
 - `requeueDocument`
 - `requeueOfflineDocument`
 - `requeueOfflineDocumentStatus`
@@ -148,8 +147,7 @@ Y builders:
 ### Certificados, billing y numeraciones
 
 - `uploadCertificate`
-- `getCertificateInfo`
-- `getCurrentCertificate`
+- `getCertificateInfo` — indica si la empresa puede firmar (ver abajo)
 - `getBillingBalance`
 - `listBillingPayments`
 - `getNumerationSummary`
@@ -159,17 +157,26 @@ Y builders:
 - `requestNumbers`
 - `requestNumerations`
 
-### Licencias offline
+## Estado del certificado
 
-- `createLicense`
-- `listLicenses`
-- `getLicense`
-- `listLicenseDevices`
-- `enableLicense`
-- `disableLicense`
-- `revokeLicense`
-- `activateLicense`
-- `refreshLicense`
+`getCertificateInfo` no devuelve datos del certificado: solo indica si la empresa
+puede firmar. `data.has_valid_certificate` es `true` si la empresa tiene
+certificado, abre con su contraseña guardada y no está vencido (la misma
+validación que usa la emisión). Si la empresa no tiene certificado responde
+`false`, no un error.
+
+```ts
+const info = await service.getCertificateInfo();
+
+if (!info.data.has_valid_certificate) {
+  // Subir un certificado vigente antes de emitir.
+  await service.uploadCertificate(businessID, {
+    certificate: 'BASE64_PFX',
+    password: 'clave-del-certificado',
+    expired_date: '2027-01-31'
+  });
+}
+```
 
 ## Filtros y folios offline
 

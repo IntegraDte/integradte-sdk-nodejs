@@ -1,23 +1,19 @@
 import type {
-  ActivateLicenseRequest,
   APIResponse,
   BillingPaymentFilters,
+  CertificateInfoResponse,
   CreateBusinessRequest,
   CreateCessionRequest,
   CreateDocumentRequest,
-  CreateLicenseRequest,
   CreatePurchaseRequest,
   DocumentFilters,
   FolioRange,
   GeneratePDFRequest,
-  LicenseActionRequest,
   ProductionModeRequest,
   PurchaseAcknowledgmentFilters,
-  RefreshLicenseRequest,
   RequeueDocumentRequest,
   RequestNumbersRequest,
   RequestNumerationsRequest,
-  SyncDocumentRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -41,10 +37,6 @@ export class Service {
 
   getDocumentStats(filters?: DocumentFilters): Promise<APIResponse> {
     return this.api.getDocumentStats(filters);
-  }
-
-  syncDocument(req: SyncDocumentRequest): Promise<APIResponse> {
-    return this.api.syncDocument(req);
   }
 
   requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
@@ -95,12 +87,8 @@ export class Service {
     return this.api.uploadCertificate(businessID, req);
   }
 
-  getCertificateInfo(): Promise<APIResponse> {
+  getCertificateInfo(): Promise<CertificateInfoResponse> {
     return this.api.getCertificateInfo();
-  }
-
-  getCurrentCertificate(): Promise<APIResponse> {
-    return this.api.getCurrentCertificate();
   }
 
   getMe(): Promise<APIResponse> {
@@ -145,41 +133,5 @@ export class Service {
 
   requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse> {
     return this.api.requestNumerations(req);
-  }
-
-  createLicense(req: CreateLicenseRequest): Promise<APIResponse> {
-    return this.api.createLicense(req);
-  }
-
-  listLicenses(): Promise<APIResponse> {
-    return this.api.listLicenses();
-  }
-
-  getLicense(id: string): Promise<APIResponse> {
-    return this.api.getLicense(id);
-  }
-
-  listLicenseDevices(id: string): Promise<APIResponse> {
-    return this.api.listLicenseDevices(id);
-  }
-
-  enableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.api.enableLicense(id, req);
-  }
-
-  disableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.api.disableLicense(id, req);
-  }
-
-  revokeLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.api.revokeLicense(id, req);
-  }
-
-  activateLicense(req: ActivateLicenseRequest): Promise<APIResponse> {
-    return this.api.activateLicense(req);
-  }
-
-  refreshLicense(req: RefreshLicenseRequest): Promise<APIResponse> {
-    return this.api.refreshLicense(req);
   }
 }

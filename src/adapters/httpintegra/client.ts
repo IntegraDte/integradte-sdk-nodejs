@@ -1,25 +1,21 @@
 import type {
-  ActivateLicenseRequest,
   APIErrorBody,
   APIResponse,
   BillingPaymentFilters,
+  CertificateInfoResponse,
   CreateBusinessRequest,
   CreateCessionRequest,
   CreateDocumentRequest,
-  CreateLicenseRequest,
   CreatePurchaseRequest,
   DocumentFilters,
   FieldError,
   FolioRange,
   GeneratePDFRequest,
-  LicenseActionRequest,
   ProductionModeRequest,
   PurchaseAcknowledgmentFilters,
-  RefreshLicenseRequest,
   RequeueDocumentRequest,
   RequestNumbersRequest,
   RequestNumerationsRequest,
-  SyncDocumentRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -119,10 +115,6 @@ export class Client implements IntegraDTEAPI {
     return this.doJSON('GET', '/api/v1/documents/stats', toQuery(filters));
   }
 
-  async syncDocument(req: SyncDocumentRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/documents/sync', undefined, req);
-  }
-
   async requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
     return this.doJSON('POST', '/api/v1/documents/requeue', undefined, req);
   }
@@ -183,12 +175,13 @@ export class Client implements IntegraDTEAPI {
     return this.doJSON('PUT', `/api/v1/business/${businessID}/certificate`, undefined, req);
   }
 
-  async getCertificateInfo(): Promise<APIResponse> {
-    return this.doJSON('GET', '/api/v1/business/certificate-info');
-  }
-
-  async getCurrentCertificate(): Promise<APIResponse> {
-    return this.doJSON('GET', '/api/v1/certificates/current');
+  /**
+   * Indica si la empresa puede firmar: `data.has_valid_certificate` es true solo si tiene
+   * certificado, abre con su contraseña guardada y no está vencido. Sin certificado
+   * responde 200 con false (no lanza APIError).
+   */
+  async getCertificateInfo(): Promise<CertificateInfoResponse> {
+    return this.doJSON<CertificateInfoResponse>('GET', '/api/v1/business/certificate-info');
   }
 
   async getMe(): Promise<APIResponse> {
@@ -233,42 +226,6 @@ export class Client implements IntegraDTEAPI {
 
   async requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse> {
     return this.doJSON('POST', '/api/v1/numerations/request-rabbitmq', undefined, req);
-  }
-
-  async createLicense(req: CreateLicenseRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/licenses', undefined, req);
-  }
-
-  async listLicenses(): Promise<APIResponse> {
-    return this.doJSON('GET', '/api/v1/licenses');
-  }
-
-  async getLicense(id: string): Promise<APIResponse> {
-    return this.doJSON('GET', `/api/v1/licenses/${encodeURIComponent(id)}`);
-  }
-
-  async listLicenseDevices(id: string): Promise<APIResponse> {
-    return this.doJSON('GET', `/api/v1/licenses/${encodeURIComponent(id)}/devices`);
-  }
-
-  async enableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.doJSON('POST', `/api/v1/licenses/${encodeURIComponent(id)}/enable`, undefined, req);
-  }
-
-  async disableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.doJSON('POST', `/api/v1/licenses/${encodeURIComponent(id)}/disable`, undefined, req);
-  }
-
-  async revokeLicense(id: string, req: LicenseActionRequest): Promise<APIResponse> {
-    return this.doJSON('POST', `/api/v1/licenses/${encodeURIComponent(id)}/revoke`, undefined, req);
-  }
-
-  async activateLicense(req: ActivateLicenseRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/licenses/activate', undefined, req);
-  }
-
-  async refreshLicense(req: RefreshLicenseRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/licenses/refresh', undefined, req);
   }
 
   private buildURL(route: string, query?: Record<string, string>): string {

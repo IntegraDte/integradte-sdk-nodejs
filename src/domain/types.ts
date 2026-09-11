@@ -121,6 +121,22 @@ export interface UploadCertificateRequest {
   expired_date: string | Date;
 }
 
+/** Forma de `data` que devuelve GET /api/v1/business/certificate-info. */
+export interface CertificateInfo {
+  /**
+   * true si la empresa tiene certificado, abre con su contraseña guardada y no está
+   * vencido (la misma validación que usa la emisión). Sin certificado es false.
+   */
+  has_valid_certificate: boolean;
+}
+
+/** Respuesta completa de GET /api/v1/business/certificate-info. */
+export interface CertificateInfoResponse {
+  success: boolean;
+  message: string;
+  data: CertificateInfo;
+}
+
 export interface CreatePurchaseRequest extends IdempotentRequest {
   xml_base64: string;
   rut_emisor: string;
@@ -142,70 +158,6 @@ export interface UploadNumerationRequest {
   due_date: string;
 }
 
-export interface CreateLicenseRequest {
-  name: string;
-  device_fingerprint: string;
-  license_key?: string;
-  features?: string[];
-  device_id?: string;
-  cli_min_version?: string;
-  validity_hours?: number;
-}
-
-export interface LicenseActionRequest {
-  reason: string;
-}
-
-export interface OfflineLicenseBusiness {
-  business_name: string;
-  rut: string;
-  activity: string;
-  address: string;
-  commune: string;
-  region: string;
-  email_dte: string;
-  email_contact: string;
-  resolution_number_dte: string;
-  resolution_date_dte: string;
-  is_prod: boolean;
-}
-
-export interface OfflineLicensePayload {
-  license_id: string;
-  business_id: string;
-  device_id: string;
-  device_fingerprint: string;
-  business: OfflineLicenseBusiness;
-  features: string[];
-  issued_at: string;
-  expires_at: string;
-  last_validated_at: string;
-  status: string;
-  cli_min_version: string;
-}
-
-export interface SignedOfflineLicense {
-  payload: OfflineLicensePayload;
-  signature: string;
-}
-
-export interface ActivateLicenseRequest {
-  license_key: string;
-  device_id: string;
-  machine_fingerprint: string;
-  hostname: string;
-  platform: string;
-  arch: string;
-  cli_version: string;
-}
-
-export interface RefreshLicenseRequest {
-  device_id: string;
-  machine_fingerprint: string;
-  cli_version: string;
-  license: SignedOfflineLicense;
-}
-
 export interface RequestNumbersRequest {
   document_type: number;
   quantity: number;
@@ -221,18 +173,6 @@ export interface FolioRange {
 export interface RequestNumerationsRequest {
   code_sii: string;
   quantity: number;
-}
-
-export interface SyncDocumentRequest {
-  document_id: string;
-  document_type: number;
-  folio: number;
-  xml_base64: string;
-  pdf_base64?: string;
-  ted_xml_base64?: string;
-  generated_at: string;
-  raw_payload: Record<string, unknown>;
-  license: SignedOfflineLicense;
 }
 
 export interface RequeueDocumentRequest {

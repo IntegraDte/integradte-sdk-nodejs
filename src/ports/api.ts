@@ -1,23 +1,19 @@
 import type {
-  ActivateLicenseRequest,
   APIResponse,
   BillingPaymentFilters,
+  CertificateInfoResponse,
   CreateBusinessRequest,
   CreateCessionRequest,
   CreateDocumentRequest,
-  CreateLicenseRequest,
   CreatePurchaseRequest,
   DocumentFilters,
   FolioRange,
   GeneratePDFRequest,
-  LicenseActionRequest,
   ProductionModeRequest,
   PurchaseAcknowledgmentFilters,
-  RefreshLicenseRequest,
   RequeueDocumentRequest,
   RequestNumbersRequest,
   RequestNumerationsRequest,
-  SyncDocumentRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -28,7 +24,6 @@ export interface IntegraDTEAPI {
   listDocuments(filters?: DocumentFilters): Promise<APIResponse>;
   getDocument(id: string): Promise<APIResponse>;
   getDocumentStats(filters?: DocumentFilters): Promise<APIResponse>;
-  syncDocument(req: SyncDocumentRequest): Promise<APIResponse>;
   requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse>;
   requeueOfflineDocument(req: RequeueDocumentRequest): Promise<APIResponse>;
   requeueOfflineDocumentStatus(req: RequeueDocumentRequest): Promise<APIResponse>;
@@ -41,8 +36,7 @@ export interface IntegraDTEAPI {
   enableProductionMode(req: ProductionModeRequest): Promise<APIResponse>;
   enableCertificationMode(): Promise<APIResponse>;
   uploadCertificate(businessID: string, req: UploadCertificateRequest): Promise<APIResponse>;
-  getCertificateInfo(): Promise<APIResponse>;
-  getCurrentCertificate(): Promise<APIResponse>;
+  getCertificateInfo(): Promise<CertificateInfoResponse>;
   getMe(): Promise<APIResponse>;
   createPurchase(req: CreatePurchaseRequest): Promise<APIResponse>;
   listPurchaseAcknowledgments(filters?: PurchaseAcknowledgmentFilters): Promise<APIResponse>;
@@ -54,13 +48,4 @@ export interface IntegraDTEAPI {
   deleteNumeration(id: string): Promise<APIResponse>;
   requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]>;
   requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse>;
-  createLicense(req: CreateLicenseRequest): Promise<APIResponse>;
-  listLicenses(): Promise<APIResponse>;
-  getLicense(id: string): Promise<APIResponse>;
-  listLicenseDevices(id: string): Promise<APIResponse>;
-  enableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse>;
-  disableLicense(id: string, req: LicenseActionRequest): Promise<APIResponse>;
-  revokeLicense(id: string, req: LicenseActionRequest): Promise<APIResponse>;
-  activateLicense(req: ActivateLicenseRequest): Promise<APIResponse>;
-  refreshLicense(req: RefreshLicenseRequest): Promise<APIResponse>;
 }

@@ -189,7 +189,13 @@ export class Client implements IntegraDTEAPI {
   }
 
   async createPurchase(req: CreatePurchaseRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/purchases', undefined, stripIdempotency(req), withIdempotency(req.idempotencyKey));
+    return this.doJSON(
+      'POST',
+      '/api/v1/purchase-acknowledgments',
+      undefined,
+      stripIdempotency(req),
+      withIdempotency(req.idempotencyKey)
+    );
   }
 
   async listPurchaseAcknowledgments(filters?: PurchaseAcknowledgmentFilters): Promise<APIResponse> {
@@ -221,7 +227,7 @@ export class Client implements IntegraDTEAPI {
   }
 
   async requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]> {
-    return this.doJSON<FolioRange[]>('POST', '/v1/numbers/request', undefined, req);
+    return this.doJSON<FolioRange[]>('POST', '/api/v1/numerations/request', undefined, req);
   }
 
   async requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse> {

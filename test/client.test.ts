@@ -158,9 +158,34 @@ describe('Client', () => {
     expect(response).toEqual(ranges);
     expect(requests[0]).toMatchObject({
       method: 'POST',
-      url: 'https://example.test/v1/numbers/request',
+      url: 'https://example.test/api/v1/numerations/request',
       body: JSON.stringify({ document_type: 33, quantity: 4 })
     });
+  });
+
+  it('creates a purchase acknowledgment with its idempotency key', async () => {
+    const requests: RecordedRequest[] = [];
+    const client = recordingClient(requests);
+
+    await client.createPurchase({
+      xml_base64: 'BASE64',
+      rut_emisor: '76123456-7',
+      razon_social_emisor: 'Proveedor SpA',
+      tipo_dte: '33',
+      folio: 1234,
+      mnt_total: '119000',
+      fecha_emision: '2026-09-01',
+      email_emisor: 'dte@proveedor.cl',
+      accion_doc: 'ACD',
+      idempotencyKey: 'idem-purchase-1'
+    });
+
+    expect(requests[0]).toMatchObject({
+      method: 'POST',
+      url: 'https://example.test/api/v1/purchase-acknowledgments'
+    });
+    expect(requests[0]?.headers.get('idempotency-key')).toBe('idem-purchase-1');
+    expect(JSON.parse(String(requests[0]?.body))).not.toHaveProperty('idempotencyKey');
   });
 
   it('supports numeration requests and document requeues', async () => {

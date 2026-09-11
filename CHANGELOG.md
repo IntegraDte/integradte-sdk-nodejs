@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.1](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.7.0...sdk-v0.7.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **api:** createPurchase y requestNumbers usan las rutas vigentes de la API ([791bc0b](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/791bc0bad5ab9fdc2ce3ddcc232fb9a65a4792ec))
+* **api:** createPurchase y requestNumbers usan las rutas vigentes de la API ([4de6bff](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/4de6bff542c09e799fcd24c0f366bb277f3cc2ae))
+
 ## [0.7.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.6.0...sdk-v0.7.0) (2026-09-11)
 
 

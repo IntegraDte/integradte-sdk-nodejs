@@ -3,7 +3,8 @@
   "release-type": "node",
   "packages": {
     ".": {
-      "package-name": "@integradte/sdk"
+      "package-name": "@integradte/sdk",
+      "bump-minor-pre-major": true
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@integradte/sdk",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "SDK Node.js/TypeScript para la API de IntegraDTE con arquitectura hexagonal",
   "keywords": [
     "integradte",

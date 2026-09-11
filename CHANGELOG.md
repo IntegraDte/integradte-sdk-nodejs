@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.6.0...sdk-v0.7.0) (2026-09-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** se eliminan syncDocument, getCurrentCertificate, createLicense, listLicenses, getLicense, listLicenseDevices, enableLicense, disableLicense, revokeLicense, activateLicense y refreshLicense de Client, Service e IntegraDTEAPI, junto con sus tipos de request. getCertificateInfo ahora resuelve a CertificateInfoResponse ({ success, message, data: { has_valid_certificate } }) en vez del detalle del certificado, y sin certificado resuelve con false en vez de lanzar APIError 400.
+
+### Features
+
+* **api:** el SDK se alinea con la API: fuera licencias, sync y certificado actual ([d688a53](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/d688a534028c7c03d1a338db6955126906285b64))
+
 ## [0.6.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.5.0...sdk-v0.6.0) (2026-07-07)
 
 

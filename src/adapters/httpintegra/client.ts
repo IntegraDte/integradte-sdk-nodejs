@@ -15,7 +15,6 @@ import type {
   PurchaseAcknowledgmentFilters,
   RequeueDocumentRequest,
   RequestNumbersRequest,
-  RequestNumerationsRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -117,10 +116,6 @@ export class Client implements IntegraDTEAPI {
 
   async requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
     return this.doJSON('POST', '/api/v1/documents/requeue', undefined, req);
-  }
-
-  async requeueOfflineDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/documents/requeue/offline', undefined, req);
   }
 
   async requeueOfflineDocumentStatus(req: RequeueDocumentRequest): Promise<APIResponse> {
@@ -228,10 +223,6 @@ export class Client implements IntegraDTEAPI {
 
   async requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]> {
     return this.doJSON<FolioRange[]>('POST', '/api/v1/numerations/request', undefined, req);
-  }
-
-  async requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/numerations/request-rabbitmq', undefined, req);
   }
 
   private buildURL(route: string, query?: Record<string, string>): string {

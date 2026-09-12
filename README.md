@@ -137,7 +137,6 @@ Y builders:
 - `getDocument`
 - `getDocumentStats`
 - `requeueDocument`
-- `requeueOfflineDocument`
 - `requeueOfflineDocumentStatus`
 - `createCession`
 - `generatePDF`
@@ -155,7 +154,6 @@ Y builders:
 - `uploadNumeration`
 - `deleteNumeration`
 - `requestNumbers`
-- `requestNumerations`
 
 ## Estado del certificado
 

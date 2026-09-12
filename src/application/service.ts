@@ -13,7 +13,6 @@ import type {
   PurchaseAcknowledgmentFilters,
   RequeueDocumentRequest,
   RequestNumbersRequest,
-  RequestNumerationsRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -41,10 +40,6 @@ export class Service {
 
   requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
     return this.api.requeueDocument(req);
-  }
-
-  requeueOfflineDocument(req: RequeueDocumentRequest): Promise<APIResponse> {
-    return this.api.requeueOfflineDocument(req);
   }
 
   requeueOfflineDocumentStatus(req: RequeueDocumentRequest): Promise<APIResponse> {
@@ -129,9 +124,5 @@ export class Service {
 
   requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]> {
     return this.api.requestNumbers(req);
-  }
-
-  requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse> {
-    return this.api.requestNumerations(req);
   }
 }

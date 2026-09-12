@@ -240,6 +240,53 @@ Cuándo conviene pasar tu propia clave:
 Las demás rutas no usan el header. `generatePDF` lo sigue enviando solo si le
 pasas `idempotencyKey`.
 
+## Errores (`APIError`)
+
+Ante un status que no es 2xx el SDK lanza `APIError`, con `statusCode`, `body`
+(texto crudo), `parsed` (el JSON) y `apiMessage`.
+
+`isValidationError()` es `true` cuando el request tiene datos que el integrador
+puede corregir:
+
+- **400** que trae el reporte del validador en `details` (validación del body):
+
+  ```json
+  {
+    "success": false,
+    "message": "Validation error",
+    "details": {
+      "success": false,
+      "message": "Validation failed",
+      "errors": [
+        { "field": "email", "tag": "required", "value": "", "message": "Field 'email' is required" }
+      ]
+    }
+  }
+  ```
+
+- **422** al validar el DTE en `createDocument`: `details` es un arreglo plano de
+  `{ field, message }`.
+
+Los demás 400 (`invalid request body`, `idempotency-key header is required`...) no
+son errores de validación. `details` normaliza las dos formas a `FieldError[]`
+(`field`, `message` y, en los 400, `tag` y `value`) y devuelve `[]` si no hay
+detalle. En campos anidados, `field` puede venir con el nombre Go (`CodeSii`) en
+vez del nombre JSON.
+
+```ts
+import { APIError } from '@integradte/sdk';
+
+try {
+  await service.updateLowStockConfig({ items: [{ code_sii: '99', threshold: 5, request_quantity: 10 }] });
+} catch (err) {
+  if (err instanceof APIError && err.isValidationError()) {
+    for (const fieldError of err.details) {
+      console.log(fieldError.field, fieldError.message);
+    }
+  }
+}
+```
+
 ## Estado del certificado
 
 `getCertificateInfo` no devuelve datos del certificado: solo indica si la empresa

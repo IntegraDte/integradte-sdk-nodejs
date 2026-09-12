@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.8.0...sdk-v0.9.0) (2026-09-12)
+
+
+### Features
+
+* **api:** cubre toda la API pública y siempre envía idempotency-key ([e4de512](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/e4de512870d6f10b49ecd0f1ea38cb7085eed825))
+* **api:** cubre toda la API pública y siempre envía idempotency-key ([814d3aa](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/814d3aa6304e411355ed867ec58591769f7adbfb))
+
 ## [0.8.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.7.1...sdk-v0.8.0) (2026-09-12)
 
 

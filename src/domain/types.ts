@@ -1,16 +1,42 @@
 export type APIResponse = Record<string, unknown>;
 
-/** Error de validación campo a campo que devuelve la API (status 422). */
+/**
+ * Error de validación de un campo. La API lo manda en dos respuestas:
+ *
+ * - 400 al validar el body del request: dentro de `details.errors`, con `field`,
+ *   `tag`, `value` y `message`. En campos anidados `field` puede traer el nombre Go
+ *   (p. ej. `CodeSii`) en vez del nombre JSON.
+ * - 422 al validar el DTE en POST /api/v1/documents: en `details`, como arreglo
+ *   plano con `field` y `message`.
+ *
+ * `APIError.details` normaliza ambas formas a un arreglo de FieldError.
+ */
 export interface FieldError {
   field: string;
   message: string;
+  /** Regla que falló (p. ej. `required`, `email`). Solo viene en los 400. */
+  tag?: string;
+  /** Valor recibido. Solo viene en los 400. */
+  value?: unknown;
+}
+
+/** Reporte del validador que la API manda en `details` de un 400 de validación. */
+export interface ValidationErrorDetails {
+  success: boolean;
+  message: string;
+  errors: FieldError[];
 }
 
 /** Forma del body JSON que devuelve la API ante un error. */
 export interface APIErrorBody {
   success?: boolean;
   message?: string;
-  /** Presente en errores de validación (422): detalle por campo. */
+  /**
+   * Detalle del error. Ojo: el tipo declarado solo cubre el 422 de validación del DTE
+   * (arreglo plano). En un 400 de validación viene un {@link ValidationErrorDetails}.
+   * Para leer los errores por campo usa `APIError.details`, que entiende ambas formas.
+   * El tipo se mantiene así por compatibilidad.
+   */
   details?: FieldError[];
   /** Código de error opcional. */
   code?: string;

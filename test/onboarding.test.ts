@@ -68,6 +68,27 @@ describe('OnboardingClient', () => {
     expect(request?.headers.get('x-user-key')).toBeNull();
     expect(request?.body).toBe(JSON.stringify({ email: 'user@x.cl', password: 'secreta' }));
     expect((res.data as { xUserKey: string }).xUserKey).toBe('the-user-key');
+
+    // `data` viene tipado, y la respuesta sigue siendo asignable a APIResponse.
+    const typedKey: string = res.data.xUserKey;
+    const legacy: Record<string, unknown> = res;
+    expect(typedKey).toBe('the-user-key');
+    expect(legacy.success).toBe(true);
+  });
+
+  it('types the first business response with its api token', async () => {
+    const client = recordingClient([], {
+      success: true,
+      message: 'business created successfully',
+      data: { id: 'biz-1', apiToken: { id: 'token-1', xApiKey: 'token-1' } }
+    });
+
+    const created = await client.createFirstBusiness(firstBusiness, 'the-user-key');
+
+    const xApiKey: string = created.data.apiToken.xApiKey;
+    const legacy: Record<string, unknown> = created;
+    expect(xApiKey).toBe('token-1');
+    expect(legacy.message).toBe('business created successfully');
   });
 
   it('sends the x-user-key header when creating the first business', async () => {

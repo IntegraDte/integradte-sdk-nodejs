@@ -96,19 +96,45 @@ export class APIError extends Error {
   }
 
   /**
-   * Errores de validación campo a campo (presentes en respuestas 422). Devuelve
-   * [] si no hay detalle, para poder iterar sin chequear null.
+   * Errores de validación campo a campo, normalizados. La API los manda de dos formas:
+   *
+   * - 400 (validación del body): en `details.errors`, con `field`, `tag`, `value` y `message`.
+   * - 422 (validación del DTE en POST /documents): en `details`, arreglo plano de
+   *   `field` y `message`.
+   *
+   * Devuelve [] si no hay detalle, para poder iterar sin chequear null.
    */
   get details(): FieldError[] {
-    return this.parsed?.details ?? [];
+    const details: unknown = this.parsed?.details;
+    if (Array.isArray(details)) {
+      return details as FieldError[];
+    }
+    if (APIError.isValidationReport(details)) {
+      return details.errors;
+    }
+    return [];
   }
 
   /**
-   * true si es un error de validación (422): el usuario puede corregirlo y
-   * `details`/`apiMessage` traen el motivo. Un 500 no es validation error.
+   * true si es un error de validación que el integrador puede corregir, con el
+   * motivo en `details` y `apiMessage`:
+   *
+   * - 422: validación del DTE en POST /documents.
+   * - 400 que trae el reporte del validador en `details` (`details.errors`).
+   *
+   * Otros 400 (p. ej. "invalid request body" o "idempotency-key header is required")
+   * y los 5xx no son errores de validación.
    */
   isValidationError(): boolean {
-    return this.statusCode === 422;
+    if (this.statusCode === 422) {
+      return true;
+    }
+    return this.statusCode === 400 && APIError.isValidationReport(this.parsed?.details);
+  }
+
+  /** Reporte del validador (`ValidationErrorDetails`): un objeto con `errors` como arreglo. */
+  private static isValidationReport(value: unknown): value is { errors: FieldError[] } {
+    return typeof value === 'object' && value !== null && Array.isArray((value as { errors?: unknown }).errors);
   }
 }
 
@@ -140,6 +166,10 @@ export class Client implements IntegraDTEAPI {
   /**
    * Valida email + password y devuelve el x-user-key en `data.xUserKey`. Va sin
    * autenticación: no envía el x-api-key configurado.
+   *
+   * @deprecated Usa `OnboardingClient.login`, el punto de entrada del bootstrap: no
+   * pide un x-api-key, que justamente todavía no se tiene. Se mantiene por
+   * compatibilidad con 0.9.0 y se quitará en la próxima versión mayor.
    */
   async login(req: LoginRequest): Promise<LoginResponse> {
     return this.send<LoginResponse>('POST', '/api/v1/auth/login', undefined, req, {});
@@ -149,6 +179,10 @@ export class Client implements IntegraDTEAPI {
    * Crea la primera empresa del usuario. Se autentica con el `xUserKey` de esta
    * llamada en vez del x-api-key configurado. La respuesta trae
    * `data.apiToken.xApiKey`, el x-api-key para operar desde ahí.
+   *
+   * @deprecated Usa `OnboardingClient.createFirstBusiness`, el punto de entrada del
+   * bootstrap. Se mantiene por compatibilidad con 0.9.0 y se quitará en la próxima
+   * versión mayor.
    */
   async createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<CreateFirstBusinessResponse> {
     if (!xUserKey?.trim()) {

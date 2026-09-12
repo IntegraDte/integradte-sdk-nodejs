@@ -667,4 +667,54 @@ describe('APIError', () => {
     expect(err.apiMessage).toBe('business with rut already exists');
     expect(err.details).toEqual([]);
   });
+
+  it('reads the validator report of a 400 validation error', () => {
+    // Body real de response.ErrorWithData con el reporte de validatorapi.ValidateBody.
+    const body = JSON.stringify({
+      success: false,
+      message: 'Validation error',
+      details: {
+        success: false,
+        message: 'Validation failed',
+        errors: [
+          { field: 'email', tag: 'required', value: '', message: "Field 'email' is required" },
+          { field: 'CodeSii', tag: 'oneof', value: '99', message: "Field 'CodeSii' must be one of: 33 34 39" }
+        ]
+      }
+    });
+    const err = new APIError(400, body);
+
+    expect(err.isValidationError()).toBe(true);
+    expect(err.apiMessage).toBe('Validation error');
+    expect(err.details).toEqual([
+      { field: 'email', tag: 'required', value: '', message: "Field 'email' is required" },
+      { field: 'CodeSii', tag: 'oneof', value: '99', message: "Field 'CodeSii' must be one of: 33 34 39" }
+    ]);
+  });
+
+  it('treats a 400 validation report with lowercase message the same way', () => {
+    const body = JSON.stringify({
+      success: false,
+      message: 'validation error',
+      details: { success: false, message: 'Validation failed', errors: [] }
+    });
+    const err = new APIError(400, body);
+
+    expect(err.isValidationError()).toBe(true);
+    expect(err.details).toEqual([]);
+  });
+
+  it('does not treat other 400s as validation errors', () => {
+    const missingKey = new APIError(
+      400,
+      JSON.stringify({ success: false, message: 'idempotency-key header is required' })
+    );
+    const badBody = new APIError(400, JSON.stringify({ success: false, message: 'invalid request body' }));
+    const notJSON = new APIError(400, 'Bad Request');
+
+    for (const err of [missingKey, badBody, notJSON]) {
+      expect(err.isValidationError()).toBe(false);
+      expect(err.details).toEqual([]);
+    }
+  });
 });

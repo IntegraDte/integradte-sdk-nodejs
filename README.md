@@ -63,7 +63,7 @@ const login = await onboarding.login({
   email: 'user@empresa.cl',
   password: 'PasswordSeguro123'
 });
-const xUserKey = (login.data as { xUserKey: string }).xUserKey;
+const xUserKey = login.data.xUserKey;
 
 // 2) Crear la PRIMERA empresa con el x-user-key -> devuelve el x-api-key.
 //    Solo funciona si el usuario no tiene empresas (si no, la API responde 409).
@@ -86,7 +86,7 @@ const created = await onboarding.createFirstBusiness(
   },
   xUserKey
 );
-const xApiKey = (created.data as { apiToken: { xApiKey: string } }).apiToken.xApiKey;
+const xApiKey = created.data.apiToken.xApiKey;
 
 // 3) De aquí en adelante se opera con el x-api-key normal.
 const service = new Service(new Client({ apiKey: xApiKey }));
@@ -120,17 +120,25 @@ Y builders:
 
 Los nombres de los métodos son los mismos en los SDK de Go y PHP.
 
-### Salud y bootstrap (sin x-api-key)
+### Salud
 
-- `getHealth` — `GET /api/v1/health`, sin autenticación. Devuelve el JSON crudo
-  (`service`, `version`, `started_at`, `uptime_seconds`...), sin el envelope `{ success, data }`
-- `login` — valida email + password y devuelve el `x-user-key`
-- `createFirstBusiness` — crea la primera empresa con el `x-user-key` y devuelve el `x-api-key`
+- `getHealth` — `GET /api/v1/health`, sin autenticación (no envía el `x-api-key`).
+  Devuelve el JSON crudo (`service`, `version`, `started_at`, `uptime_seconds`...),
+  sin el envelope `{ success, data }`
 
-`login` y `createFirstBusiness` están en `OnboardingClient` (no pide `apiKey`) y
-también en `Client`/`Service`. En `Client` no envían el `x-api-key` configurado:
-`login` va sin autenticación y `createFirstBusiness(req, xUserKey)` manda el
-`x-user-key` que recibe en cada llamada.
+### Bootstrap (sin x-api-key, vía `OnboardingClient`)
+
+- `login` — valida email + password y devuelve el `x-user-key` (`data.xUserKey`)
+- `createFirstBusiness` — crea la primera empresa con el `x-user-key` y devuelve el
+  `x-api-key` (`data.apiToken.xApiKey`)
+
+Usa `OnboardingClient` para el bootstrap: no pide `apiKey`. Las respuestas vienen
+tipadas (`LoginResponse`, `CreateFirstBusinessResponse`) y siguen siendo asignables
+a `APIResponse`.
+
+La 0.9.0 también agregó `login` y `createFirstBusiness` a `Client`, `Service` e
+`IntegraDTEAPI`. Siguen funcionando, pero están **deprecados** en favor de
+`OnboardingClient` y se quitarán en la próxima versión mayor.
 
 ### Usuarios y empresas
 
@@ -231,6 +239,53 @@ Cuándo conviene pasar tu propia clave:
 
 Las demás rutas no usan el header. `generatePDF` lo sigue enviando solo si le
 pasas `idempotencyKey`.
+
+## Errores (`APIError`)
+
+Ante un status que no es 2xx el SDK lanza `APIError`, con `statusCode`, `body`
+(texto crudo), `parsed` (el JSON) y `apiMessage`.
+
+`isValidationError()` es `true` cuando el request tiene datos que el integrador
+puede corregir:
+
+- **400** que trae el reporte del validador en `details` (validación del body):
+
+  ```json
+  {
+    "success": false,
+    "message": "Validation error",
+    "details": {
+      "success": false,
+      "message": "Validation failed",
+      "errors": [
+        { "field": "email", "tag": "required", "value": "", "message": "Field 'email' is required" }
+      ]
+    }
+  }
+  ```
+
+- **422** al validar el DTE en `createDocument`: `details` es un arreglo plano de
+  `{ field, message }`.
+
+Los demás 400 (`invalid request body`, `idempotency-key header is required`...) no
+son errores de validación. `details` normaliza las dos formas a `FieldError[]`
+(`field`, `message` y, en los 400, `tag` y `value`) y devuelve `[]` si no hay
+detalle. En campos anidados, `field` puede venir con el nombre Go (`CodeSii`) en
+vez del nombre JSON.
+
+```ts
+import { APIError } from '@integradte/sdk';
+
+try {
+  await service.updateLowStockConfig({ items: [{ code_sii: '99', threshold: 5, request_quantity: 10 }] });
+} catch (err) {
+  if (err instanceof APIError && err.isValidationError()) {
+    for (const fieldError of err.details) {
+      console.log(fieldError.field, fieldError.message);
+    }
+  }
+}
+```
 
 ## Estado del certificado
 

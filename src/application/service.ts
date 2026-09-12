@@ -58,10 +58,12 @@ export class Service {
     return this.api.getHealth();
   }
 
+  /** @deprecated Usa `OnboardingClient.login`. Se quitará en la próxima versión mayor. */
   login(req: LoginRequest): Promise<LoginResponse> {
     return this.api.login(req);
   }
 
+  /** @deprecated Usa `OnboardingClient.createFirstBusiness`. Se quitará en la próxima versión mayor. */
   createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<CreateFirstBusinessResponse> {
     return this.api.createFirstBusiness(req, xUserKey);
   }

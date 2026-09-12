@@ -1,4 +1,10 @@
-import type { APIResponse, CreateFirstBusinessRequest, LoginRequest } from '../../domain/types.js';
+import type {
+  APIResponse,
+  CreateFirstBusinessRequest,
+  CreateFirstBusinessResponse,
+  LoginRequest,
+  LoginResponse
+} from '../../domain/types.js';
 import { APIError, DEFAULT_BASE_URL } from './client.js';
 
 export interface OnboardingClientConfig {
@@ -34,11 +40,11 @@ export class OnboardingClient {
   }
 
   /**
-   * Valida email + password de un usuario existente y devuelve el x-user-key.
-   * `data` sigue la forma de {@link LoginResponseData}.
+   * Valida email + password de un usuario existente y devuelve el x-user-key en
+   * `data.xUserKey`. La respuesta sigue siendo asignable a `APIResponse`.
    */
-  async login(req: LoginRequest): Promise<APIResponse> {
-    return this.doJSON('POST', '/api/v1/auth/login', req);
+  async login(req: LoginRequest): Promise<APIResponse & LoginResponse> {
+    return (await this.doJSON('POST', '/api/v1/auth/login', req)) as APIResponse & LoginResponse;
   }
 
   /**
@@ -46,11 +52,16 @@ export class OnboardingClient {
    * funciona si el usuario no tiene empresas todavía (si no, la API responde 409).
    * La respuesta incluye `data.apiToken.xApiKey`, el x-api-key para operar luego.
    */
-  async createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<APIResponse> {
+  async createFirstBusiness(
+    req: CreateFirstBusinessRequest,
+    xUserKey: string
+  ): Promise<APIResponse & CreateFirstBusinessResponse> {
     if (!xUserKey?.trim()) {
       throw new Error('integradte: x-user-key is required');
     }
-    return this.doJSON('POST', '/api/v1/onboarding/businesses', req, { 'x-user-key': xUserKey });
+    return (await this.doJSON('POST', '/api/v1/onboarding/businesses', req, {
+      'x-user-key': xUserKey
+    })) as APIResponse & CreateFirstBusinessResponse;
   }
 
   private async doJSON(

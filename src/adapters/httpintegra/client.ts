@@ -140,6 +140,10 @@ export class Client implements IntegraDTEAPI {
   /**
    * Valida email + password y devuelve el x-user-key en `data.xUserKey`. Va sin
    * autenticación: no envía el x-api-key configurado.
+   *
+   * @deprecated Usa `OnboardingClient.login`, el punto de entrada del bootstrap: no
+   * pide un x-api-key, que justamente todavía no se tiene. Se mantiene por
+   * compatibilidad con 0.9.0 y se quitará en la próxima versión mayor.
    */
   async login(req: LoginRequest): Promise<LoginResponse> {
     return this.send<LoginResponse>('POST', '/api/v1/auth/login', undefined, req, {});
@@ -149,6 +153,10 @@ export class Client implements IntegraDTEAPI {
    * Crea la primera empresa del usuario. Se autentica con el `xUserKey` de esta
    * llamada en vez del x-api-key configurado. La respuesta trae
    * `data.apiToken.xApiKey`, el x-api-key para operar desde ahí.
+   *
+   * @deprecated Usa `OnboardingClient.createFirstBusiness`, el punto de entrada del
+   * bootstrap. Se mantiene por compatibilidad con 0.9.0 y se quitará en la próxima
+   * versión mayor.
    */
   async createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<CreateFirstBusinessResponse> {
     if (!xUserKey?.trim()) {

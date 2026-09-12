@@ -52,7 +52,9 @@ import type {
 
 export interface IntegraDTEAPI {
   getHealth(): Promise<HealthResponse>;
+  /** @deprecated Usa `OnboardingClient.login`. Se quitará en la próxima versión mayor. */
   login(req: LoginRequest): Promise<LoginResponse>;
+  /** @deprecated Usa `OnboardingClient.createFirstBusiness`. Se quitará en la próxima versión mayor. */
   createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<CreateFirstBusinessResponse>;
   createDocument(req: CreateDocumentRequest): Promise<APIResponse>;
   listDocuments(filters?: DocumentFilters): Promise<APIResponse>;

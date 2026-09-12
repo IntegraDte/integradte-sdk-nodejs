@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.8.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.7.1...sdk-v0.8.0) (2026-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** se eliminan requeueOfflineDocument y requestNumerations de Client, Service e IntegraDTEAPI, junto con el tipo RequestNumerationsRequest. Para pedir folios queda requestNumbers.
+
+### Features
+
+* **api:** fuera requeueOfflineDocument y requestNumerations, rutas que la API retira ([c306757](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/c3067577f9a64e3c99ddc3b6a4fe02f43f6b305b))
+
 ## [0.7.1](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.7.0...sdk-v0.7.1) (2026-09-11)
 
 

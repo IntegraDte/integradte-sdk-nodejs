@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.9.0...sdk-v0.10.0) (2026-09-12)
+
+
+### Features
+
+* **onboarding:** OnboardingClient tipa sus respuestas y depreca los duplicados de Client ([de3f30d](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/de3f30d4f7019081ce4505df0b4d4c0f49000246))
+
+
+### Bug Fixes
+
+* **errors:** isValidationError y details entienden los 400 de validación de la API ([70e3062](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/70e306209be429baf90d5f8a4a184b0df00a2779))
+* **sdk:** seguimiento de [#13](https://github.com/IntegraDte/integradte-sdk-nodejs/issues/13): errores de validación, bootstrap y lint ([52c0fcc](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/52c0fcc17853a9a096071c4ae9c3e707953b29ef))
+
 ## [0.9.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.8.0...sdk-v0.9.0) (2026-09-12)
 
 

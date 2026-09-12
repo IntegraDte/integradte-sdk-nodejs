@@ -3,6 +3,10 @@ name: Release Please
 on:
   push:
     branches: [main]
+  # Disparo manual: publica en npm la versión que está en main. Sirve cuando el release ya
+  # se creó pero la publicación falló, porque re-ejecutar el workflow no vuelve a crear el
+  # release y el job de publicación se salta.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -26,7 +30,7 @@ jobs:
 
   publish-npm:
     needs: release
-    if: ${{ needs.release.outputs.release_created == 'true' }}
+    if: ${{ needs.release.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

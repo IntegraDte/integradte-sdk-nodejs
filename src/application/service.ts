@@ -1,19 +1,51 @@
 import type {
   APIResponse,
+  BillingChargeFilters,
+  BillingInvoiceFilters,
   BillingPaymentFilters,
   CertificateInfoResponse,
+  CessionFilters,
+  CessionResponse,
+  ConsumptionOperationFilters,
+  ConsumptionOverageFilters,
+  ConsumptionResponse,
   CreateBusinessRequest,
   CreateCessionRequest,
   CreateDocumentRequest,
+  CreateFirstBusinessRequest,
+  CreateFirstBusinessResponse,
   CreatePurchaseRequest,
   DocumentFilters,
   FolioRange,
   GeneratePDFRequest,
+  HealthResponse,
+  IdempotentRequest,
+  ListBillingChargesResponse,
+  ListBillingInvoicesResponse,
+  ListBillingPlansResponse,
+  ListCessionsResponse,
+  ListConsumptionOperationsResponse,
+  ListConsumptionOveragesResponse,
+  ListNumerationRangesResponse,
+  LoginRequest,
+  LoginResponse,
+  NumerationRangeFilters,
   ProductionModeRequest,
   PurchaseAcknowledgmentFilters,
+  RequeueCessionRequest,
+  RequeueCessionResponse,
   RequeueDocumentRequest,
+  RequeuePurchaseRequest,
+  RequeuePurchaseResponse,
   RequestNumbersRequest,
+  SubscriptionUpgradePreviewResponse,
   UpdateBusinessRequest,
+  UpdateDocumentRequest,
+  UpdateDocumentResponse,
+  UpdateLowStockConfigRequest,
+  UpdateLowStockConfigResponse,
+  UpdateNumerationNextNumberRequest,
+  UpdateNumerationNextNumberResponse,
   UploadCertificateRequest,
   UploadNumerationRequest
 } from '../domain/types.js';
@@ -21,6 +53,18 @@ import type { IntegraDTEAPI } from '../ports/api.js';
 
 export class Service {
   constructor(private readonly api: IntegraDTEAPI) {}
+
+  getHealth(): Promise<HealthResponse> {
+    return this.api.getHealth();
+  }
+
+  login(req: LoginRequest): Promise<LoginResponse> {
+    return this.api.login(req);
+  }
+
+  createFirstBusiness(req: CreateFirstBusinessRequest, xUserKey: string): Promise<CreateFirstBusinessResponse> {
+    return this.api.createFirstBusiness(req, xUserKey);
+  }
 
   createDocument(req: CreateDocumentRequest): Promise<APIResponse> {
     return this.api.createDocument(req);
@@ -32,6 +76,10 @@ export class Service {
 
   getDocument(id: string): Promise<APIResponse> {
     return this.api.getDocument(id);
+  }
+
+  updateDocument(id: string, req: UpdateDocumentRequest): Promise<UpdateDocumentResponse> {
+    return this.api.updateDocument(id, req);
   }
 
   getDocumentStats(filters?: DocumentFilters): Promise<APIResponse> {
@@ -48,6 +96,18 @@ export class Service {
 
   createCession(req: CreateCessionRequest): Promise<APIResponse> {
     return this.api.createCession(req);
+  }
+
+  requeueCession(req: RequeueCessionRequest): Promise<RequeueCessionResponse> {
+    return this.api.requeueCession(req);
+  }
+
+  listCessions(filters?: CessionFilters): Promise<ListCessionsResponse> {
+    return this.api.listCessions(filters);
+  }
+
+  getCession(id: string): Promise<CessionResponse> {
+    return this.api.getCession(id);
   }
 
   generatePDF(req: GeneratePDFRequest, cedible: boolean): Promise<APIResponse> {
@@ -94,6 +154,10 @@ export class Service {
     return this.api.createPurchase(req);
   }
 
+  requeuePurchase(req: RequeuePurchaseRequest): Promise<RequeuePurchaseResponse> {
+    return this.api.requeuePurchase(req);
+  }
+
   listPurchaseAcknowledgments(filters?: PurchaseAcknowledgmentFilters): Promise<APIResponse> {
     return this.api.listPurchaseAcknowledgments(filters);
   }
@@ -106,6 +170,34 @@ export class Service {
     return this.api.listBillingPayments(filters);
   }
 
+  listBillingCharges(filters?: BillingChargeFilters): Promise<ListBillingChargesResponse> {
+    return this.api.listBillingCharges(filters);
+  }
+
+  listBillingPlans(): Promise<ListBillingPlansResponse> {
+    return this.api.listBillingPlans();
+  }
+
+  listBillingInvoices(filters?: BillingInvoiceFilters): Promise<ListBillingInvoicesResponse> {
+    return this.api.listBillingInvoices(filters);
+  }
+
+  previewSubscriptionUpgrade(planID: string): Promise<SubscriptionUpgradePreviewResponse> {
+    return this.api.previewSubscriptionUpgrade(planID);
+  }
+
+  getConsumption(): Promise<ConsumptionResponse> {
+    return this.api.getConsumption();
+  }
+
+  listConsumptionOverages(filters?: ConsumptionOverageFilters): Promise<ListConsumptionOveragesResponse> {
+    return this.api.listConsumptionOverages(filters);
+  }
+
+  listConsumptionOperations(filters?: ConsumptionOperationFilters): Promise<ListConsumptionOperationsResponse> {
+    return this.api.listConsumptionOperations(filters);
+  }
+
   getNumerationSummary(): Promise<APIResponse> {
     return this.api.getNumerationSummary();
   }
@@ -114,12 +206,27 @@ export class Service {
     return this.api.getLastUsedFolio(codeSII);
   }
 
+  listNumerationRanges(filters?: NumerationRangeFilters): Promise<ListNumerationRangesResponse> {
+    return this.api.listNumerationRanges(filters);
+  }
+
   uploadNumeration(req: UploadNumerationRequest): Promise<APIResponse> {
     return this.api.uploadNumeration(req);
   }
 
-  deleteNumeration(id: string): Promise<APIResponse> {
-    return this.api.deleteNumeration(id);
+  deleteNumeration(id: string, options?: IdempotentRequest): Promise<APIResponse> {
+    return this.api.deleteNumeration(id, options);
+  }
+
+  updateNumerationNextNumber(
+    numerationID: string,
+    req: UpdateNumerationNextNumberRequest
+  ): Promise<UpdateNumerationNextNumberResponse> {
+    return this.api.updateNumerationNextNumber(numerationID, req);
+  }
+
+  updateLowStockConfig(req: UpdateLowStockConfigRequest): Promise<UpdateLowStockConfigResponse> {
+    return this.api.updateLowStockConfig(req);
   }
 
   requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]> {

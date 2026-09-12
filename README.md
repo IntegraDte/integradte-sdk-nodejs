@@ -18,6 +18,7 @@ npm install @integradte/sdk
 ## Uso recomendado
 
 ```ts
+import { randomUUID } from 'node:crypto';
 import { Client, Service, encodeDataDTE } from '@integradte/sdk';
 
 const adapter = new Client({
@@ -35,10 +36,12 @@ const dataDTE = encodeDataDTE({
   }
 });
 
+// idempotencyKey es opcional: sin él, el SDK genera un UUID en cada llamada.
+// Pasa el tuyo (un UUID) si necesitas reintentar la misma operación sin duplicarla.
 const response = await service.createDocument({
   code_sii: '33',
   data_dte: dataDTE,
-  idempotencyKey: 'mi-idempotency-key-1'
+  idempotencyKey: randomUUID()
 });
 
 console.log(response);
@@ -115,10 +118,19 @@ Y builders:
 
 ## Endpoints implementados
 
-### Bootstrap (sin x-api-key, vía `OnboardingClient`)
+Los nombres de los métodos son los mismos en los SDK de Go y PHP.
 
+### Salud y bootstrap (sin x-api-key)
+
+- `getHealth` — `GET /api/v1/health`, sin autenticación. Devuelve el JSON crudo
+  (`service`, `version`, `started_at`, `uptime_seconds`...), sin el envelope `{ success, data }`
 - `login` — valida email + password y devuelve el `x-user-key`
 - `createFirstBusiness` — crea la primera empresa con el `x-user-key` y devuelve el `x-api-key`
+
+`login` y `createFirstBusiness` están en `OnboardingClient` (no pide `apiKey`) y
+también en `Client`/`Service`. En `Client` no envían el `x-api-key` configurado:
+`login` va sin autenticación y `createFirstBusiness(req, xUserKey)` manda el
+`x-user-key` que recibe en cada llamada.
 
 ### Usuarios y empresas
 
@@ -130,30 +142,95 @@ Y builders:
 - `enableProductionMode`
 - `enableCertificationMode`
 
-### Documentos y compras
+### Documentos, compras y cesiones
 
 - `createDocument`
 - `listDocuments`
 - `getDocument`
+- `updateDocument` — reemplaza el DTE de un documento que el SII aún no recibió
+  (`data_dte` como string JSON, o `data_dte_json` como objeto)
 - `getDocumentStats`
 - `requeueDocument`
 - `requeueOfflineDocumentStatus`
-- `createCession`
 - `generatePDF`
 - `createPurchase`
 - `listPurchaseAcknowledgments`
+- `requeuePurchase` — reencola un acuse de recibo (`purchase_id`)
+- `createCession`
+- `listCessions` — paginado; con `document_id` responde si el documento ya fue cedido
+- `getCession`
+- `requeueCession` — reencola una cesión (`cession_id`)
 
-### Certificados, billing y numeraciones
+### Certificados
 
 - `uploadCertificate`
 - `getCertificateInfo` — indica si la empresa puede firmar (ver abajo)
-- `getBillingBalance`
-- `listBillingPayments`
+
+### Numeraciones (folios)
+
 - `getNumerationSummary`
 - `getLastUsedFolio`
+- `listNumerationRanges` — rangos CAF por tipo DTE (filtro opcional `code_sii`)
 - `uploadNumeration`
 - `deleteNumeration`
+- `updateNumerationNextNumber` — fija el próximo folio de un rango CAF (el
+  `ranges[].id` que devuelve `listNumerationRanges`)
+- `updateLowStockConfig` — umbrales de folios bajos por `code_sii`; se mezcla con la
+  configuración existente y devuelve la configuración completa
 - `requestNumbers`
+
+### Billing y consumo
+
+- `getBillingBalance`
+- `listBillingPayments`
+- `listBillingCharges` — cargos de consumo (`status`, `pricing_key`, `from_date`,
+  `to_date`, `page`, `limit`)
+- `listBillingPlans` — planes activos
+- `listBillingInvoices` — facturas (filtro opcional `status`)
+- `previewSubscriptionUpgrade` — cotiza un upgrade de plan (id o `code` del plan);
+  no cobra nada
+- `getConsumption` — cupo y sobreconsumo del ciclo vigente
+- `listConsumptionOverages` — operaciones por encima del cupo (paginado)
+- `listConsumptionOperations` — detalle de operaciones de un período `YYYY-MM`
+  (sin paginar)
+
+## Idempotencia (`idempotency-key`)
+
+Estas rutas exigen el header `idempotency-key` con un UUID (sirve cualquier
+versión). Sin él la API responde 400:
+
+| Método del SDK | Ruta |
+|---|---|
+| `createDocument` | `POST /api/v1/documents` |
+| `updateDocument` | `PUT /api/v1/documents/:id` |
+| `createBusiness` | `POST /api/v1/businesses` |
+| `updateBusiness` | `PUT /api/v1/businesses/:id` |
+| `uploadCertificate` | `PUT /api/v1/business/:id/certificate` |
+| `uploadNumeration` | `PUT /api/v1/numerations` |
+| `deleteNumeration` | `DELETE /api/v1/numerations/:id` |
+| `updateNumerationNextNumber` | `PATCH /api/v1/numerations/:id/next-number` |
+| `updateLowStockConfig` | `PATCH /api/v1/numerations/low-stock` |
+| `createPurchase` | `POST /api/v1/purchase-acknowledgments` |
+| `createCession` | `POST /api/v1/cessions` |
+
+En esas rutas el SDK siempre envía el header. Si pasas `idempotencyKey` usa tu
+clave; si no, genera un UUID nuevo en cada llamada (`crypto.randomUUID()`). En
+`deleteNumeration` la clave va en un segundo argumento opcional:
+`deleteNumeration(id, { idempotencyKey })`. El SDK no reintenta solo.
+
+Cuándo conviene pasar tu propia clave:
+
+- Para reintentar sin duplicar una operación que quizá llegó a la API (timeout,
+  corte de red): repite la misma clave y la API devuelve la respuesta que guardó.
+- La clave dura 24 horas por usuario y ruta, y la API **no compara el body**:
+  reutilizarla con otro body devuelve la primera respuesta. Usa una clave distinta
+  para cada operación.
+- Si la API respondió con un error, reintenta con una clave nueva: repetir la
+  anterior puede devolver 500 `failed to parse cached response`. `updateDocument`
+  nunca guarda su respuesta, así que cada intento necesita una clave nueva.
+
+Las demás rutas no usan el header. `generatePDF` lo sigue enviando solo si le
+pasas `idempotencyKey`.
 
 ## Estado del certificado
 
@@ -192,6 +269,25 @@ const folioRanges = await service.requestNumbers({
   document_type: 33,
   quantity: 100
 });
+```
+
+## Rangos CAF y folios bajos
+
+```ts
+// Rangos CAF de facturas (33). `ranges[].id` identifica cada rango.
+const { data } = await service.listNumerationRanges({ code_sii: '33' });
+const range = data.items[0]?.ranges[0];
+
+if (range) {
+  // El próximo documento de ese rango saldrá con el folio 150.
+  await service.updateNumerationNextNumber(range.id, { next_number: 150 });
+}
+
+// Con 20 folios o menos disponibles de tipo 33, pedir 100 más. `code_sii` va como string.
+const lowStock = await service.updateLowStockConfig({
+  items: [{ code_sii: '33', threshold: 20, request_quantity: 100 }]
+});
+console.log(lowStock.data.items); // configuración completa de la empresa
 ```
 
 ## Scripts

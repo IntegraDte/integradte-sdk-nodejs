@@ -13,7 +13,6 @@ import type {
   PurchaseAcknowledgmentFilters,
   RequeueDocumentRequest,
   RequestNumbersRequest,
-  RequestNumerationsRequest,
   UpdateBusinessRequest,
   UploadCertificateRequest,
   UploadNumerationRequest
@@ -25,7 +24,6 @@ export interface IntegraDTEAPI {
   getDocument(id: string): Promise<APIResponse>;
   getDocumentStats(filters?: DocumentFilters): Promise<APIResponse>;
   requeueDocument(req: RequeueDocumentRequest): Promise<APIResponse>;
-  requeueOfflineDocument(req: RequeueDocumentRequest): Promise<APIResponse>;
   requeueOfflineDocumentStatus(req: RequeueDocumentRequest): Promise<APIResponse>;
   createCession(req: CreateCessionRequest): Promise<APIResponse>;
   generatePDF(req: GeneratePDFRequest, cedible: boolean): Promise<APIResponse>;
@@ -47,5 +45,4 @@ export interface IntegraDTEAPI {
   uploadNumeration(req: UploadNumerationRequest): Promise<APIResponse>;
   deleteNumeration(id: string): Promise<APIResponse>;
   requestNumbers(req: RequestNumbersRequest): Promise<FolioRange[]>;
-  requestNumerations(req: RequestNumerationsRequest): Promise<APIResponse>;
 }

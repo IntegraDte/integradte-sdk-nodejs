@@ -170,11 +170,6 @@ export interface FolioRange {
   folio_xml_base64: string;
 }
 
-export interface RequestNumerationsRequest {
-  code_sii: string;
-  quantity: number;
-}
-
 export interface RequeueDocumentRequest {
   document_id: string;
 }

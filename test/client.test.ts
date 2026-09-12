@@ -188,19 +188,15 @@ describe('Client', () => {
     expect(JSON.parse(String(requests[0]?.body))).not.toHaveProperty('idempotencyKey');
   });
 
-  it('supports numeration requests and document requeues', async () => {
+  it('supports document requeues', async () => {
     const requests: RecordedRequest[] = [];
     const client = recordingClient(requests);
 
-    await client.requestNumerations({ code_sii: '33', quantity: 120 });
     await client.requeueDocument({ document_id: 'online-id' });
-    await client.requeueOfflineDocument({ document_id: 'offline-id' });
     await client.requeueOfflineDocumentStatus({ document_id: 'offline-id' });
 
     expect(requests.map(({ method, url }) => ({ method, url }))).toEqual([
-      { method: 'POST', url: 'https://example.test/api/v1/numerations/request-rabbitmq' },
       { method: 'POST', url: 'https://example.test/api/v1/documents/requeue' },
-      { method: 'POST', url: 'https://example.test/api/v1/documents/requeue/offline' },
       { method: 'POST', url: 'https://example.test/api/v1/documents/requeue/status' }
     ]);
   });

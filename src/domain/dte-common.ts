@@ -171,24 +171,56 @@ export interface Referencia {
   RazonRef?: string;
 }
 
-export interface Transporte {
-  Patente?: string;
-  RUTTrans?: string;
+/**
+ * Chofer identifica a quien conduce. El esquema del SII lo exige como bloque propio dentro de
+ * Transporte, no como campos planos: un NombreChofer colgado directamente de Transporte se
+ * rechaza con "This element is not expected".
+ */
+export interface Chofer {
+  RUTChofer?: string;
   NombreChofer?: string;
-  DirDest?: string;
-  CmnaDest?: string;
 }
 
-export interface TransporteGuia {
+/**
+ * Transporte es el bloque de transporte del documento, que va DENTRO de Encabezado, entre
+ * Receptor y Totales.
+ *
+ * PatenteCarro, FchSalida, HraSalida y FchLlegada los agrego el Formato DTE v2.5 (2026-02) y
+ * la Res. Ex. SII N 144 de 2026 los volvio obligatorios para los documentos que amparan
+ * traslado de bienes. Aca son opcionales porque la API todavia no los exige.
+ *
+ * El SII valida los formatos al caracter: FchSalida y FchLlegada en AAAA-MM-DD, y HraSalida en
+ * HH:MM:SS con segundos y ceros a la izquierda. Tanto "08:30" como "8:30:00" se rechazan.
+ */
+export interface Transporte {
   Patente?: string;
+  /** Patente del carro, sea remolque o semirremolque. */
+  PatenteCarro?: string;
   RUTTrans?: string;
-  NombreChofer?: string;
-  RUTChofer?: string;
-  NroLicencia?: string;
+  Chofer?: Chofer;
   DirDest?: string;
   CmnaDest?: string;
   CiudadDest?: string;
+  /** Fecha efectiva de inicio del traslado (AAAA-MM-DD). */
+  FchSalida?: string;
+  /** Hora de inicio del traslado (HH:MM:SS, con segundos). */
+  HraSalida?: string;
+  /** Fecha de llegada del traslado (AAAA-MM-DD). */
+  FchLlegada?: string;
+
+  /** @deprecated Usar `Chofer.NombreChofer`. Se acepta y se mueve al armar el request. */
+  NombreChofer?: string;
+  /** @deprecated Usar `Chofer.RUTChofer`. Se acepta y se mueve al armar el request. */
+  RUTChofer?: string;
+  /** @deprecated El SII no lo declara en ningun esquema. Se descarta al armar el request. */
+  NroLicencia?: string;
 }
+
+/**
+ * @deprecated Usar `Transporte`. El esquema del SII define un unico bloque de transporte,
+ * igual para todos los tipos de documento que lo admiten.
+ */
+export type TransporteGuia = Transporte;
 
 export interface SubTotInfo {
   NroSTI?: number;

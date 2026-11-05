@@ -15,9 +15,14 @@ import type {
   Totales,
   TotalesBoleta,
   TotalesGuia,
-  Transporte,
-  TransporteGuia
+  Transporte
 } from './dte-common.js';
+
+/**
+ * @deprecated Usar `Encabezado.Transporte`, que es donde lo ubica el esquema del SII. Si se
+ * manda al tope del documento, el SDK lo mueve al Encabezado al armar el request.
+ */
+type TransporteAlTope = Transporte;
 
 export interface Dte33Data {
   Encabezado: Encabezado33;
@@ -26,7 +31,8 @@ export interface Dte33Data {
   Referencia?: Referencia[];
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
-  Transporte?: Transporte;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   OtraMoneda?: OtraMoneda;
 }
 
@@ -34,6 +40,8 @@ export interface Encabezado33 {
   IdDoc: IdDocBase;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: Totales;
 }
 
@@ -44,7 +52,8 @@ export interface Dte34Data {
   Referencia?: Referencia[];
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
-  Transporte?: Transporte;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   OtraMoneda?: OtraMoneda;
 }
 
@@ -52,6 +61,8 @@ export interface Encabezado34 {
   IdDoc: IdDocBase;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: Totales;
 }
 
@@ -94,7 +105,8 @@ export interface Dte46Data {
   Referencia?: Referencia[];
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
-  Transporte?: Transporte;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   OtraMoneda?: OtraMoneda;
 }
 
@@ -102,6 +114,8 @@ export interface Encabezado46 {
   IdDoc: IdDocBase;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: Totales;
 }
 
@@ -110,7 +124,8 @@ export interface Dte52Data {
   Detalle: Detalle[];
   DscRcgGlobal?: DscRcgGlobal[];
   Referencia?: Referencia[];
-  Transporte?: TransporteGuia;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
   OtraMoneda?: OtraMoneda;
@@ -120,6 +135,8 @@ export interface Encabezado52 {
   IdDoc: IdDocGuia;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: TotalesGuia;
 }
 
@@ -130,7 +147,8 @@ export interface Dte56Data {
   Referencia?: Referencia[];
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
-  Transporte?: Transporte;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   OtraMoneda?: OtraMoneda;
 }
 
@@ -138,6 +156,8 @@ export interface Encabezado56 {
   IdDoc: IdDocBase;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: Totales;
 }
 
@@ -148,7 +168,8 @@ export interface Dte61Data {
   Referencia?: Referencia[];
   Comisiones?: Comisiones[];
   SubTotInfo?: SubTotInfo[];
-  Transporte?: Transporte;
+  /** @deprecated Usar `Encabezado.Transporte`. */
+  Transporte?: TransporteAlTope;
   OtraMoneda?: OtraMoneda;
 }
 
@@ -156,5 +177,7 @@ export interface Encabezado61 {
   IdDoc: IdDocBase;
   Emisor: Emisor;
   Receptor: Receptor;
+  /** Bloque de transporte, en la posicion que exige la secuencia del esquema del SII. */
+  Transporte?: Transporte;
   Totales: Totales;
 }

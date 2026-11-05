@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.10.0...sdk-v0.11.0) (2026-11-05)
+
+
+### Features
+
+* **dte:** el bloque Transporte va dentro de Encabezado y el chofer en su bloque ([324e46f](https://github.com/IntegraDte/integradte-sdk-nodejs/commit/324e46f4877b8598b315b3674a5043adfdd659ee))
+
 ## [0.10.0](https://github.com/IntegraDte/integradte-sdk-nodejs/compare/sdk-v0.9.0...sdk-v0.10.0) (2026-09-12)
 
 
